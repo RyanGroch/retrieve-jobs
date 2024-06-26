@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Retrieve Jobs
 
-## Getting Started
+This is an application that fetches job output from mainframes. Retrieve Jobs makes FTP requests in order to list, download, and delete jobs that the user has submitted.
 
-First, run the development server:
+There are two different versions of Retrieve Jobs in this repository. One version is a web app that can be deployed to a variety of hosts with zero configuration. The other is a cross-platform desktop app which should be able to run on most major operating systems with no issues. Both versions share the same user interface.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+A deployed web version of Retrieve Jobs can be found [here](https://retrieve-jobs.vercel.app/).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The desktop version of Retrieve Jobs is downloadable from the [releases page](https://github.com/RyanGroch/retrieve-jobs/releases).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Running the Web Version
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+As mentioned previously, an "official" deployment of the web application is available [here](https://retrieve-jobs.vercel.app/) for anyone to use.
 
-## Learn More
+However, you may find value in deploying your own instance of the web app. After all, any single instance could run into host-imposed rate limits or get IP banned by the mainframe if the app gets misused.
 
-To learn more about Next.js, take a look at the following resources:
+Fortunately, anyone who has found their way to this GitHub repository is also able to deploy their own instance of Retrieve Jobs. You don’t need to mess with the code, nor do you need to install anything; you just need a GitHub account.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Hosting
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Retrieve Jobs is written in the [Next.js](https://nextjs.org/) framework, and as such the web version can run on any server that supports Node.js apps.
 
-## Deploy on Vercel
+Additionally, some hosts directly support Next.js. Any such host will be able to run the web version of this app with absolutely no configuration. A few of these hosts are listed below:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [Vercel](https://vercel.com/)
+- [Netlify](https://www.netlify.com/)
+- [Render](https://render.com/)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+All of the hosts listed above have generous free tiers, and you do not need to provide them with payment information in order to get started.
+
+### Deployment
+
+Assuming that you have a GitHub account and have selected one of the hosts above, the general process to deploying the web app are roughly as follows:
+
+1. Fork this repository. You can keep your fork public or private; it's up to you.
+2. Sign into your selected host with your GitHub account.
+3. Give your host access to your forked repository.
+4. Through your host, deploy your repository as a new project. Generally you can leave all settings at their default values.
+
+While the process may vary by the specific host, I have found it to be reasonably straightforward for all the hosts listed in the section above.
+
+## Running the Desktop Version
+
+The latest binaries for Windows, MacOS, and Linux are available on the [releases page](https://github.com/RyanGroch/retrieve-jobs/releases) of this repository. The desktop version of Retrieve Jobs should provide roughly the same experience as the web version.
+
+The main benefit to using the desktop app is that it does not depend on an intermediary server to send the FTP requests to the mainframe. This means that the desktop app does not risk running into host-imposed rate limits. Additionally, an IP ban issued by Marist will affect only a single user if the user is on the desktop version; an IP ban against a web server will affect every user of that server. Therefore, the desktop version of Retrieve Jobs should be regarded as the safer option for users that are able to run it.
+
+### Choosing the Appropriate Binary File
+
+You can determine which binary file is appropriate for your device by referencing the table below:
+
+| Operating System / Architecture | Available Binaries                  |
+| ------------------------------- | ----------------------------------- |
+| Windows                         | `-setup.exe`, `.msi`                |
+| MacOS / Intel                   | `x64.dmg`, `x64.app.tar.gz`         |
+| MacOS / Apple silicon           | `aarch64.dmg`, `aarch64.app.tar.gz` |
+| Debian-based Linux Distros      | `.deb`, `.AppImage`                 |
+| Any Linux Distro                | `.AppImage`                         |
+
+## Local Development
+
+This section is for users who wish to use a development version of this app. **This is not necessary for most users.** However, it may be useful for users who wish to make their own modifications to Retrieve Jobs.
+
+### Tools Required
+
+You will need to install the following software to set up a development environment:
+
+- [Node.js](https://nodejs.org)
+- [Rust](https://www.rust-lang.org/) - only necessary for desktop development
+
+### Setting up the Development Environment
+
+Assuming you have installed the software listed above, follow the steps below:
+
+1. Run a `git clone` on this repository.
+2. Open a terminal and navigate to the project root of the cloned repository.
+3. Run `npm install`.
+4. Run the command `npm run dev` to run the web-based version; run `npm run tauri dev` to run the desktop version.
+
+Depending on your operating system, you may need to install additional tools to run the desktop app in development mode. Refer to the [Tauri Documentation](https://tauri.app/v1/guides/getting-started/prerequisites) for more details on the subject.
+
+## Technologies Used
+
+This app was developed using the following technologies:
+
+- [TypeScript](https://www.typescriptlang.org/)
+- [React.js](https://react.dev), with [TanStack Query / React Query](https://tanstack.com/query/latest/docs/framework/react/overview)
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Rust](https://www.rust-lang.org/)
+- [Tauri](https://tauri.app/)
