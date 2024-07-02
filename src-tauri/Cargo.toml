@@ -1,6 +1,6 @@
 [package]
 name = "retrieve-jobs"
-version = "0.1.0"
+version = "0.1.1"
 description = "An app that retrieves job output from mainframes."
 authors = ["Ryan Groch", "<ryan.w.groch@gmail.com>"]
 license = ""

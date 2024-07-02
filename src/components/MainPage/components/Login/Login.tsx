@@ -120,7 +120,7 @@ const Login: FC<Props> = ({ setCredentials, listJobsQuery, mounted }) => {
                 />
               </div>
               <label
-                className="cursor-pointer pl-3 pt-1"
+                className="cursor-pointer pl-3 pt-1 dark:text-white"
                 htmlFor="stay-logged-in"
               >
                 Stay Logged In

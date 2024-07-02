@@ -36,7 +36,20 @@ const Dashboard: FC<Props> = ({
       const data = await FTPdelete(credentials, deleteList);
 
       if (data?.success) {
-        setJobsList(() => parseJobsList(data.result));
+        const newJobsList = parseJobsList(data.result);
+
+        // If all of the previous items are still present
+        if (jobsList.every((job) => newJobsList.includes(job))) {
+          // Then we wait half a second for the server to update
+          await new Promise((res) => {
+            setTimeout(
+              async () => res(await listJobsQuery.mutateAsync({ credentials })),
+              500
+            );
+          });
+        } else {
+          setJobsList(newJobsList);
+        }
       } else {
         // Reattempt authentication upon failure
         listJobsQuery.mutate({ credentials });
