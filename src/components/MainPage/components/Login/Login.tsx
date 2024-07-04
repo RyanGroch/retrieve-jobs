@@ -11,7 +11,7 @@ type Props = {
 };
 
 const Login: FC<Props> = ({ setCredentials, listJobsQuery, mounted }) => {
-  const [host, setHost] = useState(hostsList[0]);
+  const [host, setHost] = useState(hostsList[0].address);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -38,6 +38,7 @@ const Login: FC<Props> = ({ setCredentials, listJobsQuery, mounted }) => {
             <span className="text-red-700 dark:text-red-400">Jobs</span>
           </h1>
           <form
+            autoComplete="on"
             onSubmit={(e) => {
               e.preventDefault();
               if (listJobsQuery.isPending || !mounted) return;
@@ -72,8 +73,10 @@ const Login: FC<Props> = ({ setCredentials, listJobsQuery, mounted }) => {
                 value={host}
                 onChange={(e) => setHost(e.currentTarget.value)}
               >
-                {hostsList.map((hostName) => (
-                  <option key={hostName}>{hostName}</option>
+                {hostsList.map((currHost) => (
+                  <option value={currHost.address} key={currHost.address}>
+                    {currHost.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -89,6 +92,7 @@ const Login: FC<Props> = ({ setCredentials, listJobsQuery, mounted }) => {
                 className="w-full rounded border-2 border-gray-400 bg-gray-100 pl-1 transition-bg-border dark:border-gray-500 dark:bg-neutral-600 dark:text-white"
                 value={username}
                 onChange={(e) => setUsername(e.currentTarget.value)}
+                autoComplete="username"
                 required
                 type="text"
               />
@@ -105,7 +109,7 @@ const Login: FC<Props> = ({ setCredentials, listJobsQuery, mounted }) => {
                 className="w-full rounded border-2 border-gray-400 bg-gray-100 pl-1 transition-bg-border dark:border-gray-500 dark:bg-neutral-600 dark:text-white"
                 value={password}
                 onChange={(e) => setPassword(e.currentTarget.value)}
-                autoComplete="on"
+                autoComplete="current-password"
                 required
                 type="password"
               />

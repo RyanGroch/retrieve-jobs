@@ -4,7 +4,7 @@ import {
   usernamePattern,
   passwordPattern,
   jobPattern,
-  hostsList
+  addressList
 } from "@/utils/allowed";
 
 // Like all functions in the /src/app/api directory,
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       !usernamePattern.test(username) ||
       !passwordPattern.test(password) ||
       !jobPattern.test(job) ||
-      !hostsList.includes(host)
+      !addressList.includes(host)
     )
       throw new Error();
 

@@ -1,5 +1,16 @@
 // Defines which hosts the app is allowed to make requests to
-export const hostsList = ["zos.kctr.marist.edu", "184.105.60.27"];
+export const hostsList = [
+  {
+    name: "Marist Mainframe",
+    address: "zos.kctr.marist.edu"
+  },
+  {
+    name: "MLC Mainframe",
+    address: "184.105.60.27"
+  }
+];
+
+export const addressList = hostsList.map((currHost) => currHost.address);
 
 // Defines valid characters for usernames
 export const usernamePattern = /^[a-zA-Z0-9@#$]+$/;

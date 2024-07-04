@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { curl } from "@/lib/curl";
-import { usernamePattern, passwordPattern, hostsList } from "@/utils/allowed";
+import { usernamePattern, passwordPattern, addressList } from "@/utils/allowed";
 
 // Like all functions in the /src/app/api directory,
 // this function only runs on the server of the web app.
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       !password ||
       !usernamePattern.test(username) ||
       !passwordPattern.test(password) ||
-      !hostsList.includes(host)
+      !addressList.includes(host)
     )
       throw new Error();
 
