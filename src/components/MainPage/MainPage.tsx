@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import type { ListJobsParams, Credentials } from "@/utils/types";
 import { parseJobsList } from "@/utils/parse-jobs-list";
-import { FTPlist } from "@/utils/ftp";
+import { FTPlist, logout } from "@/utils/api";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Login from "./components/Login/Login";
 
@@ -34,10 +34,9 @@ const HomeMain = () => {
       const data =
         host &&
         username &&
-        password &&
-        (await FTPlist({ host, username, password }));
+        (await FTPlist({ host, username, password }, saveCredentials ?? false));
 
-      if (data?.success) {
+      if (data && data.success) {
         setLoggedIn(true);
         setJobsList(parseJobsList(data.result));
 
@@ -45,15 +44,12 @@ const HomeMain = () => {
         if (saveCredentials) {
           localStorage.setItem("host", host);
           localStorage.setItem("username", username);
-          localStorage.setItem("password", password);
         }
       } else {
         setLoggedIn(false);
         setJobsList([]);
 
-        localStorage.removeItem("host");
-        localStorage.removeItem("username");
-        localStorage.removeItem("password");
+        logout();
 
         throw new Error();
       }
@@ -68,13 +64,12 @@ const HomeMain = () => {
 
     const storedHost = localStorage.getItem("host");
     const storedUsername = localStorage.getItem("username");
-    const storedPassword = localStorage.getItem("password");
 
-    if (storedHost && storedUsername && storedPassword) {
+    if (storedHost && storedUsername) {
       const storedCreds = {
         host: storedHost,
         username: storedUsername,
-        password: storedPassword
+        password: ""
       };
 
       listJobsQuery.mutate({ credentials: storedCreds });
@@ -98,8 +93,9 @@ const HomeMain = () => {
         />
       ) : (
         <Login
-          mounted={mounted}
+          credentials={credentials}
           setCredentials={setCredentials}
+          mounted={mounted}
           listJobsQuery={listJobsQuery}
         />
       )}

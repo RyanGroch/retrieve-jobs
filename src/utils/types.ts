@@ -17,3 +17,7 @@ export type ListJobsMutation = UseMutationResult<
   ListJobsParams,
   unknown
 >;
+
+export type FTPSuccessResult = { success: true; result: string };
+export type FTPFailResult = { success: false };
+export type FTPResult = FTPSuccessResult | FTPFailResult;

@@ -5,12 +5,18 @@ import LoadingSpinner from "@/components/misc/LoadingSpinner/LoadingSpinner";
 import Checkbox from "@/components/misc/Checkbox/Checkbox";
 
 type Props = {
+  credentials: Credentials;
   setCredentials: React.Dispatch<React.SetStateAction<Credentials>>;
   listJobsQuery: ListJobsMutation;
   mounted: boolean;
 };
 
-const Login: FC<Props> = ({ setCredentials, listJobsQuery, mounted }) => {
+const Login: FC<Props> = ({
+  credentials,
+  setCredentials,
+  listJobsQuery,
+  mounted
+}) => {
   const [host, setHost] = useState(hostsList[0].address);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -138,7 +144,9 @@ const Login: FC<Props> = ({ setCredentials, listJobsQuery, mounted }) => {
                 <p className="pt-2 text-center text-lg font-bold text-red-700 dark:text-red-400">
                   {validationError
                     ? "Invalid characters."
-                    : "Authentication failed."}
+                    : !credentials.password
+                      ? "Session expired."
+                      : "Authentication failed."}
                 </p>
               )}
             </div>

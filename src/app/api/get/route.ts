@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { curl } from "@/lib/curl";
+import { getStoredPassword } from "@/utils/password-storage";
 import {
   usernamePattern,
   passwordPattern,
@@ -15,14 +16,15 @@ import {
 export async function POST(request: NextRequest) {
   try {
     const { username, password, host, job } = await request.json();
+    const sessionPassword = password || getStoredPassword();
 
     // Simple validation; check that inputs exist and are valid
     if (
       !username ||
-      !password ||
+      !sessionPassword ||
       !job ||
       !usernamePattern.test(username) ||
-      !passwordPattern.test(password) ||
+      !passwordPattern.test(sessionPassword) ||
       !jobPattern.test(job) ||
       !addressList.includes(host)
     )
@@ -32,7 +34,7 @@ export async function POST(request: NextRequest) {
     // throws an error if the job doesn't exist
     const curlResult = curl([
       "-u",
-      `${username}:${password}`,
+      `${username}:${sessionPassword}`,
       `ftp://${host}/${job}`,
       "-Q",
       "SITE filetype=jes",

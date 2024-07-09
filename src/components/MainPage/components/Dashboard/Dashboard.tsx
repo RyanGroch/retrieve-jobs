@@ -4,7 +4,7 @@ import type { ListJobsMutation, Credentials } from "@/utils/types";
 import { downloadFile } from "@/utils/download-file";
 import { formatJobContent } from "@/utils/format-job-content";
 import { parseJobsList } from "@/utils/parse-jobs-list";
-import { FTPdelete, FTPget } from "@/utils/ftp";
+import { FTPdelete, FTPget, logout } from "@/utils/api";
 import LoadingSpinner from "@/components/misc/LoadingSpinner/LoadingSpinner";
 
 type Props = {
@@ -102,9 +102,7 @@ const Dashboard: FC<Props> = ({
                 password: ""
               });
 
-              localStorage.removeItem("host");
-              localStorage.removeItem("username");
-              localStorage.removeItem("password");
+              logout();
             }}
           >
             Logout

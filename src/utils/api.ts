@@ -1,5 +1,10 @@
 import { getTauri } from "@/lib/tauri";
-import { type Credentials } from "./types";
+import type {
+  Credentials,
+  FTPSuccessResult,
+  FTPFailResult,
+  FTPResult
+} from "./types";
 
 // FTP requests cannot occur on the frontend (i.e. in the browser).
 // The functions in this file detect whether the app is in web
@@ -7,17 +12,27 @@ import { type Credentials } from "./types";
 // backend (based on whether we are in web or desktop mode)
 // where the FTP request will occur.
 
+// The exception is of course the `logout` function,
+// which does not make an FTP request but does
+// clear cookies and storage.
+
 // Lists jobs.
-export const FTPlist = async (credentials: Credentials) => {
+export const FTPlist = async (
+  credentials: Credentials,
+  storePassword: boolean
+): Promise<FTPResult> => {
   try {
     const tauri = getTauri();
     if (tauri) {
       // Desktop mode
-      const result = await tauri.invoke("list", credentials);
+      const result = await tauri.invoke("list", {
+        ...credentials,
+        storePassword
+      });
       return {
         success: true,
         result
-      };
+      } as FTPSuccessResult;
     }
 
     // Web mode
@@ -26,19 +41,23 @@ export const FTPlist = async (credentials: Credentials) => {
       body: JSON.stringify({
         host: credentials.host,
         username: credentials.username,
-        password: credentials.password
+        password: credentials.password,
+        storePassword
       })
     });
 
-    const data = await response.json();
+    const data = (await response.json()) as FTPSuccessResult;
     return data;
   } catch {
-    return { success: false };
+    return { success: false } as FTPFailResult;
   }
 };
 
 // Gets the contents of a specific job.
-export const FTPget = async (credentials: Credentials, job: string) => {
+export const FTPget = async (
+  credentials: Credentials,
+  job: string
+): Promise<FTPResult> => {
   try {
     const tauri = getTauri();
     if (tauri) {
@@ -47,7 +66,7 @@ export const FTPget = async (credentials: Credentials, job: string) => {
       return {
         success: true,
         result
-      };
+      } as FTPSuccessResult;
     }
 
     // Web mode
@@ -61,15 +80,18 @@ export const FTPget = async (credentials: Credentials, job: string) => {
       })
     });
 
-    const data = await response.json();
+    const data = (await response.json()) as FTPSuccessResult;
     return data;
   } catch {
-    return { success: false };
+    return { success: false } as FTPFailResult;
   }
 };
 
 // Deletes one or more jobs.
-export const FTPdelete = async (credentials: Credentials, jobs: string[]) => {
+export const FTPdelete = async (
+  credentials: Credentials,
+  jobs: string[]
+): Promise<FTPResult> => {
   try {
     const tauri = getTauri();
     if (tauri) {
@@ -78,7 +100,7 @@ export const FTPdelete = async (credentials: Credentials, jobs: string[]) => {
       return {
         success: true,
         result
-      };
+      } as FTPSuccessResult;
     }
 
     // Web mode
@@ -92,9 +114,26 @@ export const FTPdelete = async (credentials: Credentials, jobs: string[]) => {
       })
     });
 
-    const data = await response.json();
+    const data = (await response.json()) as FTPSuccessResult;
     return data;
   } catch {
-    return { success: false };
+    return { success: false } as FTPFailResult;
+  }
+};
+
+// Deletes the password; clears storage & cookies/keyring.
+export const logout = () => {
+  const tauri = getTauri();
+
+  localStorage.removeItem("host");
+  localStorage.removeItem("username");
+  localStorage.removeItem("password"); // legacy, can remove later
+
+  if (tauri) {
+    tauri.invoke("logout");
+  } else {
+    fetch("/api/logout", {
+      method: "POST"
+    });
   }
 };

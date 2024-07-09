@@ -1,16 +1,21 @@
 use suppaftp::FtpStream;
 use std::error::Error;
 
+use crate::password_storage::{get_stored_password, set_stored_password, delete_stored_password};
+
 // These functions handle the FTP requests for the desktop version of the app.
 // Rust code never runs in the web version.
 
 // Makes an FTP request to list the available jobs.
 // Replaces the /api/list endpoint.
 #[tauri::command(async)]
-pub fn list(host: String, username: String, password: String) -> Result<String, String> {
-    match internal_list(host, username, password) {
+pub fn list(host: String, username: String, password: String, store_password: bool) -> Result<String, String> {
+    match internal_list(host, username, password, store_password) {
         Ok(job_list) => Ok(job_list),
-        Err(e) => Err(format!("{}", e)),
+        Err(e) => {
+            let _ = delete_stored_password();
+            Err(format!("{}", e))
+        },
     }
 }
 
@@ -34,11 +39,21 @@ pub fn delete(host: String, username: String, password: String, jobs: Vec<String
     }
 }
 
+#[tauri::command(async)]
+pub fn logout() -> Result<(), String> {
+    match delete_stored_password() {
+        Ok(_) => Ok(()),
+        Err(e) => Err(format!("{}", e)),
+    }
+}
+
 // Propogates errors up to the wrapping 'list' function.
-fn internal_list(host: String, username: String, password: String) -> Result<String, Box<dyn Error>> {
+fn internal_list(host: String, username: String, password: String, store_password: bool) -> Result<String, Box<dyn Error>> {
+    let session_password = if password.len() > 0 { password } else { get_stored_password()? };
+
     // Connect to host and authenticate, else throw error
     let mut ftp_stream = FtpStream::connect(format!("{}:21", host))?;
-    ftp_stream.login(username, password)?;
+    ftp_stream.login(username, session_password.clone())?;
 
     ftp_stream.site("filetype=jes")?;
 
@@ -49,15 +64,21 @@ fn internal_list(host: String, username: String, password: String) -> Result<Str
 
     ftp_stream.quit()?;
 
+    if store_password {
+        let _ = set_stored_password(session_password);
+    }
+
     Ok(job_list)
 }
 
 // Propogates errors up to the wrapping 'get' function.
 fn internal_get(host: String, username: String, password: String, job: String) -> Result<String, Box<dyn Error>> {
+    let session_password = if password.len() > 0 { password } else { get_stored_password()? };
+
     let mut return_file = String::new();
 
     let mut ftp_stream = FtpStream::connect(format!("{}:21", host))?;
-    ftp_stream.login(username, password)?;
+    ftp_stream.login(username, session_password)?;
 
     ftp_stream.site("filetype=jes")?;
 
@@ -74,8 +95,10 @@ fn internal_get(host: String, username: String, password: String, job: String) -
 
 // Propogates errors up to the wrapping 'delete' function.
 fn internal_delete(host: String, username: String, password: String, jobs: Vec<String>) -> Result<String, Box<dyn Error>> {
+    let session_password = if password.len() > 0 { password } else { get_stored_password()? };
+
     let mut ftp_stream = FtpStream::connect(format!("{}:21", host))?;
-    ftp_stream.login(username, password)?;
+    ftp_stream.login(username, session_password)?;
 
     ftp_stream.site("filetype=jes")?;
 
