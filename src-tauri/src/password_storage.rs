@@ -23,6 +23,6 @@ pub fn get_stored_password() -> Result<String> {
 pub fn delete_stored_password() -> Result<()> {
     let username = username();
     let entry = Entry::new(SERVICE_NAME, &username)?;
-    entry.delete_password()?;
+    entry.delete_credential()?;
     Ok(())
 }

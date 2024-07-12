@@ -39,7 +39,7 @@
         "icons/icon.ico"
       ],
       "identifier": "app.retrieve-jobs",
-      "longDescription": "This app provides an intuitive interface for interacting with a mainframe via FTP. Users may list, download, and delete the jobs that they have submitted to the mainframe.",
+      "longDescription": "This app provides an intuitive interface for interacting with a mainframe via FTP. Users can list, download, and delete the jobs that they have submitted to the mainframe.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -48,7 +48,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "Get job output from mainframes",
+      "shortDescription": "Get job output from mainframes.",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
@@ -57,7 +57,9 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": {
+        "default-src": "'self'"
+      }
     },
     "updater": {
       "active": false
