@@ -10,7 +10,7 @@ const options = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "strict", // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
-  maxAge: 7 * 24 * 60 * 60 * 1000, // Lasts one week
+  maxAge: 28 * 24 * 60 * 60, // Lasts one month
   path: "/"
 } as const;
 
