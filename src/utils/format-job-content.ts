@@ -10,6 +10,7 @@ const carriageControlMap = new Map<string, string>([
 // Handles the interpretation of carriage control characters.
 export const formatJobContent = (text: string) =>
   text
+    .replaceAll("\r", "") // Necessary for desktop version
     .split("\n")
     .map((line) => {
       if (line.slice(1) === spoolEnd) return "";
