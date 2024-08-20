@@ -9,7 +9,7 @@ type Props = {
 };
 
 const Checkbox: FC<Props> = ({ id, mounted, checked, onChange }) => {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   if (!mounted) return null;
 
@@ -25,7 +25,7 @@ const Checkbox: FC<Props> = ({ id, mounted, checked, onChange }) => {
       <div className="absolute inset-0">
         {/* Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. */}
         {/* Modifications have been made from the original */}
-        {theme !== "dark" ? (
+        {resolvedTheme !== "dark" ? (
           checked ? (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <defs>

@@ -3,7 +3,7 @@ import { useTheme } from "next-themes";
 
 const ThemeSwitchButton = () => {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   // Closely follows the next-themes documentation:
   // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#avoid-hydration-mismatch
@@ -21,9 +21,9 @@ const ThemeSwitchButton = () => {
   return (
     <button
       className="absolute bottom-0 left-2 h-7 w-8 rounded-t-full bg-white p-2 pt-1.5 xs:left-4 xs:h-9 xs:w-10 dark:bg-neutral-700"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
-      {theme !== "dark" ? (
+      {resolvedTheme !== "dark" ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 122.88 122.89"

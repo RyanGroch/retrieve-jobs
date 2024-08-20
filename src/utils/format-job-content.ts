@@ -12,7 +12,7 @@ export const formatJobContent = (text: string) =>
   text
     .split("\n")
     .map((line) => {
-      if (line.includes(spoolEnd)) return "";
+      if (line.slice(1) === spoolEnd) return "";
 
       const carriageControl = line[0];
       const whitespace = carriageControlMap.get(carriageControl) ?? "";
