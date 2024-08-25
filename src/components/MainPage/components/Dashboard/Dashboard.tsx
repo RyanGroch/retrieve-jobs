@@ -157,7 +157,7 @@ const Dashboard: FC<Props> = ({
                     setLastClicked("delete-all");
                   }}
                 >
-                  Delete All
+                  Purge All
                 </button>
               </div>
             </div>
@@ -165,7 +165,7 @@ const Dashboard: FC<Props> = ({
           <div className="min-h-10">
             {(downloadError || deleteError) && (
               <p className="text-xl font-bold text-red-700 dark:text-red-400">
-                {downloadError ? "Download failed." : "Deletion failed."}
+                {downloadError ? "Download failed." : "Purge failed."}
               </p>
             )}
           </div>
@@ -230,7 +230,7 @@ const Dashboard: FC<Props> = ({
                                 setLastClicked(`delete-${job}`);
                               }}
                             >
-                              Delete
+                              Purge
                             </button>
                           </div>
                         </div>
