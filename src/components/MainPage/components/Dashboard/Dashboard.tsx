@@ -118,7 +118,7 @@ const Dashboard: FC<Props> = ({
             <div className="flex flex-col gap-2 text-lg xs:flex-row">
               <div className="relative">
                 {loading && lastClicked === "refresh" && (
-                  <div className="absolute inset-x-9 inset-y-1 xs:inset-x-7">
+                  <div className="absolute inset-x-8 inset-y-[0.09rem] xs:inset-x-[1.625rem] xs:inset-y-[0.0625rem]">
                     <LoadingSpinner />
                   </div>
                 )}
@@ -140,7 +140,7 @@ const Dashboard: FC<Props> = ({
               </div>
               <div className="relative">
                 {loading && lastClicked === "delete-all" && (
-                  <div className="absolute inset-x-9 inset-y-1">
+                  <div className="absolute inset-x-8 inset-y-[0.0625rem]">
                     <LoadingSpinner />
                   </div>
                 )}
@@ -189,7 +189,7 @@ const Dashboard: FC<Props> = ({
                         <div className="mx-auto flex w-min flex-col justify-center gap-1 xs:flex-row">
                           <div className="relative">
                             {loading && lastClicked === `download-${job}` && (
-                              <div className="absolute inset-x-9 inset-y-0.5 xs:inset-x-11 xs:inset-y-1">
+                              <div className="absolute inset-x-[2.125rem] inset-y-[0.0625rem] xs:inset-x-[2.6rem]">
                                 <LoadingSpinner />
                               </div>
                             )}
@@ -212,7 +212,7 @@ const Dashboard: FC<Props> = ({
                           </div>
                           <div className="relative">
                             {loading && lastClicked === `delete-${job}` && (
-                              <div className="absolute inset-x-9 inset-y-0.5 xs:inset-x-7 xs:inset-y-1">
+                              <div className="absolute inset-x-[2.125rem] inset-y-[0.0625rem] xs:inset-x-[1.375rem]">
                                 <LoadingSpinner />
                               </div>
                             )}

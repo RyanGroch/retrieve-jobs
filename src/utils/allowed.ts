@@ -5,7 +5,7 @@ export const hostsList = [
     address: "zos.kctr.marist.edu"
   },
   {
-    name: "MLC Mainframe",
+    name: "EMMA Mainframe",
     address: "184.105.60.27"
   }
 ];
