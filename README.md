@@ -39,6 +39,19 @@ Assuming that you have a GitHub account and have selected one of the hosts above
 
 While the process may vary by the specific host, I have found it to be reasonably straightforward for all the hosts listed in the section above.
 
+### Password Encryption
+
+This app has a "stay signed in" feature which works by storing the user’s password in the browser. Passwords _should_ generally be hashed, but we can’t use hashing here because Retrieve Jobs needs to be able to send the plaintext password to the mainframe on each request. Therefore, this app instead encrypts the password and stores the ciphertext in the browser.
+
+The encryption key is stored on the server as an environment variable named `ENCRYPTION_KEY`. This should be set to a Base64 string which is 32 bytes in length. One possible way to generate a string which meets these requirements is by running the following code in NodeJS:
+
+```js
+const { randomBytes } = require("crypto");
+randomBytes(32).toString("base64");
+```
+
+You do not need to provide a key yourself. If you do not provide a key, then Retrieve Jobs will use a key generated at build time. The disadvantage to this is that users will be “signed out” on each new redeployment.
+
 ## Running the Desktop Version
 
 The latest binaries for Windows, MacOS, and Linux are available on the [releases page](https://github.com/RyanGroch/retrieve-jobs/releases) of this repository. The desktop version of Retrieve Jobs should provide roughly the same experience as the web version.
@@ -54,6 +67,7 @@ You can determine which binary file is appropriate for your device by referencin
 | Windows                         | `-setup.exe`, `.msi`                |
 | MacOS / Intel                   | `x64.dmg`, `x64.app.tar.gz`         |
 | MacOS / Apple silicon           | `aarch64.dmg`, `aarch64.app.tar.gz` |
+| RHEL-based Linux Distros        | `.rpm`, `.AppImage`                 |
 | Debian-based Linux Distros      | `.deb`, `.AppImage`                 |
 | Any Linux Distro                | `.AppImage`                         |
 
