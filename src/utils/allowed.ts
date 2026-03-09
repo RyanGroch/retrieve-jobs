@@ -7,6 +7,10 @@ export const hostsList = [
   {
     name: "EMMA Mainframe",
     address: "184.105.60.27"
+  },
+  {
+    name: "EMMA 3.1 Mainframe",
+    address: "184.105.60.26"
   }
 ];
 
