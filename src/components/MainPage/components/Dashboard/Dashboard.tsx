@@ -1,6 +1,10 @@
 import { type FC, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import type { ListJobsMutation, Credentials } from "@/utils/types";
+import type {
+  ListJobsMutation,
+  Credentials,
+  JobListItem
+} from "@/utils/types";
 import { downloadFile } from "@/utils/download-file";
 import { formatJobContent } from "@/utils/format-job-content";
 import { parseJobsList } from "@/utils/parse-jobs-list";
@@ -10,8 +14,8 @@ import LoadingSpinner from "@/components/misc/LoadingSpinner/LoadingSpinner";
 type Props = {
   credentials: Credentials;
   setCredentials: React.Dispatch<React.SetStateAction<Credentials>>;
-  jobsList: string[];
-  setJobsList: React.Dispatch<React.SetStateAction<string[]>>;
+  jobsList: JobListItem[];
+  setJobsList: React.Dispatch<React.SetStateAction<JobListItem[]>>;
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   listJobsQuery: ListJobsMutation;
 };
@@ -39,7 +43,11 @@ const Dashboard: FC<Props> = ({
         const newJobsList = parseJobsList(data.result);
 
         // If all of the previous items are still present
-        if (jobsList.every((job) => newJobsList.includes(job))) {
+        if (
+          jobsList.every((job) =>
+            newJobsList.some(({ jobID }) => jobID === job.jobID)
+          )
+        ) {
           // Then we wait half a second for the server to update
           await new Promise((res) => {
             setTimeout(
@@ -153,7 +161,7 @@ const Dashboard: FC<Props> = ({
                   onClick={() => {
                     if (loading || !jobsList.length) return;
 
-                    deleteJobsQuery.mutate(jobsList);
+                    deleteJobsQuery.mutate(jobsList.map(({ jobID }) => jobID));
                     setLastClicked("delete-all");
                   }}
                 >
@@ -174,60 +182,62 @@ const Dashboard: FC<Props> = ({
               <table className="w-full xs:text-lg">
                 <thead>
                   <tr className="border-b border-black dark:border-white">
+                    <th className="py-2">User ID</th>
                     <th className="py-2">Job ID</th>
                     <th className="py-2">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {jobsList.map((job) => (
+                  {jobsList.map(({ jobID, userID }) => (
                     <tr
-                      key={job}
+                      key={jobID}
                       className="border-b border-black dark:border-white"
                     >
-                      <td className="py-2 text-center">{job}</td>
+                      <td className="py-2 text-center">{userID}</td>
+                      <td className="py-2 text-center">{jobID}</td>
                       <td className="py-2">
                         <div className="mx-auto flex w-min flex-col justify-center gap-1 xs:flex-row">
                           <div className="relative">
-                            {loading && lastClicked === `download-${job}` && (
+                            {loading && lastClicked === `download-${jobID}` && (
                               <div className="absolute inset-x-[2.125rem] inset-y-[0.0625rem] xs:inset-x-[2.6rem]">
                                 <LoadingSpinner />
                               </div>
                             )}
                             <button
-                              id={`download-${job}`}
+                              id={`download-${jobID}`}
                               className={`btn border px-1 font-semibold xs:px-2 ${
-                                loading && lastClicked === `download-${job}`
+                                loading && lastClicked === `download-${jobID}`
                                   ? "cursor-auto opacity-50"
                                   : "hover:bg-gray-100 dark:hover:bg-neutral-600"
                               }`}
                               onClick={() => {
                                 if (loading) return;
 
-                                downloadJobQuery.mutate(job);
-                                setLastClicked(`download-${job}`);
+                                downloadJobQuery.mutate(jobID);
+                                setLastClicked(`download-${jobID}`);
                               }}
                             >
                               Download
                             </button>
                           </div>
                           <div className="relative">
-                            {loading && lastClicked === `delete-${job}` && (
+                            {loading && lastClicked === `delete-${jobID}` && (
                               <div className="absolute inset-x-[2.125rem] inset-y-[0.0625rem] xs:inset-x-[1.375rem]">
                                 <LoadingSpinner />
                               </div>
                             )}
                             <button
-                              id={`delete-${job}`}
+                              id={`delete-${jobID}`}
                               className={`btn w-full border px-1 font-semibold text-red-700 xs:w-auto xs:px-2 dark:text-red-400 ${
-                                loading && lastClicked === `delete-${job}`
+                                loading && lastClicked === `delete-${jobID}`
                                   ? "cursor-auto opacity-50"
                                   : "hover:bg-red-100 dark:hover:bg-red-900"
                               }`}
                               onClick={() => {
                                 if (loading) return;
 
-                                deleteJobsQuery.mutate([job]);
-                                setLastClicked(`delete-${job}`);
+                                deleteJobsQuery.mutate([jobID]);
+                                setLastClicked(`delete-${jobID}`);
                               }}
                             >
                               Purge

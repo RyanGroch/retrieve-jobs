@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import type { ListJobsParams, Credentials } from "@/utils/types";
+import type { ListJobsParams, Credentials, JobListItem } from "@/utils/types";
 import { parseJobsList } from "@/utils/parse-jobs-list";
 import { FTPlist, logout } from "@/utils/api";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -17,7 +17,7 @@ const HomeMain = () => {
     password: ""
   });
   const [loggedIn, setLoggedIn] = useState(false);
-  const [jobsList, setJobsList] = useState<string[]>([]);
+  const [jobsList, setJobsList] = useState<JobListItem[]>([]);
 
   // Lock login attempts until we can check whether the user
   // asked to stay logged in the last time; also ensures

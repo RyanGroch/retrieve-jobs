@@ -21,3 +21,8 @@ export type ListJobsMutation = UseMutationResult<
 export type FTPSuccessResult = { success: true; result: string };
 export type FTPFailResult = { success: false };
 export type FTPResult = FTPSuccessResult | FTPFailResult;
+
+export type JobListItem = {
+  jobID: string;
+  userID: string;
+};
