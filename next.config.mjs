@@ -1,5 +1,10 @@
 import { randomBytes } from "crypto";
 
+// If no ENCRYPTION_KEY is provided via env, generate one at build/start time.
+if (!process.env.ENCRYPTION_KEY) {
+  process.env.ENCRYPTION_KEY = randomBytes(32).toString("base64");
+}
+
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
@@ -19,9 +24,6 @@ const nextConfig = {
     process.env.TAURI && process.env.NODE_ENV !== "development"
       ? "export"
       : undefined,
-  serverRuntimeConfig: {
-    ENCRYPTION_KEY: randomBytes(32).toString("base64")
-  },
   headers: process.env.TAURI
     ? undefined
     : async () => [

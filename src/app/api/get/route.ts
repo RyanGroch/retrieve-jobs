@@ -16,7 +16,7 @@ import {
 export async function POST(request: NextRequest) {
   try {
     const { username, password, host, job } = await request.json();
-    const sessionPassword = password || getStoredPassword();
+    const sessionPassword = password || (await getStoredPassword());
 
     // Simple validation; check that inputs exist and are valid
     if (

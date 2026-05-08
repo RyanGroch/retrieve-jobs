@@ -1,12 +1,10 @@
 import crypto from "crypto";
-import getConfig from "next/config";
 
 // The encryption key can be set manually with an environment variable.
-// If no key is set, then the app uses one that was randomly generated at build time.
+// If no key is set, next.config.mjs generates one at build/start time
+// and assigns it to process.env.ENCRYPTION_KEY.
 const getEncryptionKey = () => {
-  const key =
-    process.env.ENCRYPTION_KEY ||
-    getConfig().serverRuntimeConfig.ENCRYPTION_KEY;
+  const key = process.env.ENCRYPTION_KEY;
 
   if (typeof key !== "string" || !key.length) throw new Error();
 

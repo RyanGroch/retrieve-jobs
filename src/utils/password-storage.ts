@@ -14,8 +14,8 @@ const options = {
   path: "/"
 } as const;
 
-export const getStoredPassword = () => {
-  const cookieStore = cookies();
+export const getStoredPassword = async () => {
+  const cookieStore = await cookies();
   const [encryptedPassword, iv, tag] = [
     cookieStore.get("password"),
     cookieStore.get("iv"),
@@ -29,8 +29,8 @@ export const getStoredPassword = () => {
   return decrypt(encryptedPassword.value, iv.value, tag.value);
 };
 
-export const setStoredPassword = (password: string) => {
-  const cookieStore = cookies();
+export const setStoredPassword = async (password: string) => {
+  const cookieStore = await cookies();
   const { ciphertext, iv, tag } = encrypt(password);
 
   cookieStore.set("password", ciphertext, options);
@@ -38,8 +38,8 @@ export const setStoredPassword = (password: string) => {
   cookieStore.set("tag", tag, options);
 };
 
-export const deleteStoredPassword = () => {
-  const cookieStore = cookies();
+export const deleteStoredPassword = async () => {
+  const cookieStore = await cookies();
 
   cookieStore.delete("password");
   cookieStore.delete("iv");

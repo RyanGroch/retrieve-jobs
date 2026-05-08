@@ -17,7 +17,7 @@ import {
 export async function POST(request: NextRequest) {
   try {
     const { username, password, host, storePassword } = await request.json();
-    const sessionPassword = password || getStoredPassword();
+    const sessionPassword = password || (await getStoredPassword());
 
     // Simple validation; check that inputs exist and are valid
     if (
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     ]);
 
     if (storePassword) {
-      setStoredPassword(sessionPassword);
+      await setStoredPassword(sessionPassword);
     }
 
     return NextResponse.json(
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     );
   } catch {
     // Essentially a failed login; clear password info as invalid
-    deleteStoredPassword();
+    await deleteStoredPassword();
 
     // To keep server logic simple, we don't distinguish
     // between different types of errors
