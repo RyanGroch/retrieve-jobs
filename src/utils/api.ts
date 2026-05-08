@@ -1,4 +1,5 @@
-import { getTauri } from "@/lib/tauri";
+import { invoke } from "@tauri-apps/api/core";
+import { isTauri } from "@/lib/tauri";
 import type {
   Credentials,
   FTPSuccessResult,
@@ -22,10 +23,9 @@ export const FTPlist = async (
   storePassword: boolean
 ): Promise<FTPResult> => {
   try {
-    const tauri = getTauri();
-    if (tauri) {
+    if (isTauri()) {
       // Desktop mode
-      const result = await tauri.invoke("list", {
+      const result = await invoke<string>("list", {
         ...credentials,
         storePassword
       });
@@ -48,7 +48,8 @@ export const FTPlist = async (
 
     const data = (await response.json()) as FTPSuccessResult;
     return data;
-  } catch {
+  } catch (e) {
+    console.error(e);
     return { success: false } as FTPFailResult;
   }
 };
@@ -59,10 +60,9 @@ export const FTPget = async (
   job: string
 ): Promise<FTPResult> => {
   try {
-    const tauri = getTauri();
-    if (tauri) {
+    if (isTauri()) {
       // Desktop mode
-      const result = await tauri.invoke("get", { ...credentials, job });
+      const result = await invoke<string>("get", { ...credentials, job });
       return {
         success: true,
         result
@@ -82,7 +82,8 @@ export const FTPget = async (
 
     const data = (await response.json()) as FTPSuccessResult;
     return data;
-  } catch {
+  } catch (e) {
+    console.error(e);
     return { success: false } as FTPFailResult;
   }
 };
@@ -93,10 +94,9 @@ export const FTPdelete = async (
   jobs: string[]
 ): Promise<FTPResult> => {
   try {
-    const tauri = getTauri();
-    if (tauri) {
+    if (isTauri()) {
       // Desktop mode
-      const result = await tauri.invoke("delete", { ...credentials, jobs });
+      const result = await invoke<string>("delete", { ...credentials, jobs });
       return {
         success: true,
         result
@@ -116,21 +116,20 @@ export const FTPdelete = async (
 
     const data = (await response.json()) as FTPSuccessResult;
     return data;
-  } catch {
+  } catch (e) {
+    console.error(e);
     return { success: false } as FTPFailResult;
   }
 };
 
 // Deletes the password; clears storage & cookies/keyring.
 export const logout = () => {
-  const tauri = getTauri();
-
   localStorage.removeItem("host");
   localStorage.removeItem("username");
   localStorage.removeItem("password"); // legacy, can remove later
 
-  if (tauri) {
-    tauri.invoke("logout");
+  if (isTauri()) {
+    invoke("logout");
   } else {
     fetch("/api/logout", {
       method: "POST"

@@ -1,11 +1,6 @@
-// Determines whether we are in web mode or desktop mode.
-// If we are in desktop mode, returns an object that
-// allows the app to call Rust functions.
+// Determines whether we are running in desktop (Tauri) mode
+// or web mode. The Tauri runtime injects __TAURI_INTERNALS__
+// into the window when the app is loaded inside the WebView.
 
-// From the Tauri documentation:
-// https://tauri.app/v1/guides/getting-started/setup/integrate/#using-withglobaltauri
-
-export const getTauri = () =>
-  typeof window !== undefined && "__TAURI__" in window
-    ? (window.__TAURI__ as any)
-    : null;
+export const isTauri = () =>
+  typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;

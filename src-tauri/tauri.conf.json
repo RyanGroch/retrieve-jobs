@@ -3,67 +3,50 @@
   "build": {
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
-    "devPath": "http://localhost:3000",
-    "distDir": "../out",
-    "withGlobalTauri": true
+    "frontendDist": "../out",
+    "devUrl": "http://localhost:3000"
   },
-  "package": {
-    "productName": "Retrieve Jobs",
-    "version": "0.1.4"
-  },
-  "tauri": {
-    "allowlist": {
-      "dialog": {
-        "save": true
-      },
-      "path": {
-        "all": true
-      },
-      "fs": {
-        "writeFile": true
-      }
+  "bundle": {
+    "active": true,
+    "category": "DeveloperTool",
+    "copyright": "",
+    "targets": "all",
+    "externalBin": [],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
     },
-    "bundle": {
-      "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
+    "longDescription": "This app provides an intuitive interface for interacting with a mainframe via FTP. Users can list, download, and delete the jobs that they have submitted to the mainframe.",
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    },
+    "resources": [],
+    "shortDescription": "Get job output from mainframes.",
+    "linux": {
       "deb": {
         "depends": []
-      },
-      "externalBin": [],
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "identifier": "app.retrieve-jobs",
-      "longDescription": "This app provides an intuitive interface for interacting with a mainframe via FTP. Users can list, download, and delete the jobs that they have submitted to the mainframe.",
-      "macOS": {
-        "entitlements": null,
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": null
-      },
-      "resources": [],
-      "shortDescription": "Get job output from mainframes.",
-      "targets": "all",
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
       }
-    },
-    "security": {
-      "csp": {
-        "default-src": "'self'"
-      }
-    },
-    "updater": {
-      "active": false
-    },
+    }
+  },
+  "productName": "Retrieve Jobs",
+  "mainBinaryName": "Retrieve Jobs",
+  "version": "0.1.4",
+  "identifier": "app.retrieve-jobs",
+  "plugins": {},
+  "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "fullscreen": false,
@@ -72,8 +55,17 @@
         "title": "Retrieve Jobs",
         "width": 800,
         "minWidth": 280,
-        "minHeight": 0
+        "minHeight": 0,
+        "useHttpsScheme": true
       }
-    ]
+    ],
+    "security": {
+      "csp": {
+        "connect-src": [
+          "ipc: http://ipc.localhost"
+        ],
+        "default-src": "'self'"
+      }
+    }
   }
 }

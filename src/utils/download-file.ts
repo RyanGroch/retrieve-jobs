@@ -1,19 +1,21 @@
-import { getTauri } from "@/lib/tauri";
+import { isTauri } from "@/lib/tauri";
+import { downloadDir } from "@tauri-apps/api/path";
+import { save } from "@tauri-apps/plugin-dialog";
+import { writeTextFile } from "@tauri-apps/plugin-fs";
 
 // Initiates a file download with default name `filename` and
 // content `text`. This differs based on whether the app is
 // in web or desktop mode, so we need to check for the
-// existence of the Tauri object.
+// existence of the Tauri runtime.
 export const downloadFile = async (filename: string, text: string) => {
-  const tauri = getTauri();
-  if (tauri) {
+  if (isTauri()) {
     // In desktop mode
-    const downloadPath = await tauri.dialog.save({
+    const downloadPath = await save({
       filters: [{ name: "*.txt,*.TXT", extensions: ["txt", "TXT"] }],
-      defaultPath: (await tauri.path.downloadDir()) + filename
+      defaultPath: (await downloadDir()) + "/" + filename
     });
 
-    if (downloadPath) await tauri.fs.writeTextFile(downloadPath, text);
+    if (downloadPath) await writeTextFile(downloadPath, text);
   } else {
     // In web mode
     const downloadLink = document.createElement("a");

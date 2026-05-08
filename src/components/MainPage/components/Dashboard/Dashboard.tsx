@@ -73,7 +73,7 @@ const Dashboard: FC<Props> = ({
       const data = await FTPget(credentials, job);
 
       if (data?.success) {
-        downloadFile(`${job}.txt`, formatJobContent(data.result));
+        await downloadFile(`${job}.txt`, formatJobContent(data.result));
       } else {
         // Reattempt authentication upon failure
         listJobsQuery.mutate({ credentials });
