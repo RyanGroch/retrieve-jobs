@@ -42,7 +42,7 @@
   },
   "productName": "Retrieve Jobs",
   "mainBinaryName": "Retrieve Jobs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "identifier": "app.retrieve-jobs",
   "plugins": {},
   "app": {
