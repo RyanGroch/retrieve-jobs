@@ -182,8 +182,8 @@ const Dashboard: FC<Props> = ({
               <table className="w-full xs:text-lg">
                 <thead>
                   <tr className="border-b border-black dark:border-white">
-                    <th className="py-2">User ID</th>
-                    <th className="py-2">Job ID</th>
+                    <th className="py-2">JOBNAME</th>
+                    <th className="py-2">JOBID</th>
                     <th className="py-2">Action</th>
                   </tr>
                 </thead>
