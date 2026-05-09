@@ -14,7 +14,9 @@ const TARGET_DIR = "bin";
 
 const LINUX_BASE =
   "https://github.com/moparisthebest/static-curl/releases/latest/download";
-const WIN_REPO = "curl/curl-for-win";
+// curl/curl-for-win does not publish GitHub releases; binaries are hosted on
+// curl.se, where latest.cgi 302-redirects to the current versioned zip.
+const WIN_LATEST = "https://curl.se/windows/latest.cgi";
 
 // Picks the right download source for the current platform/arch.
 const resolveSource = async () => {
@@ -22,34 +24,28 @@ const resolveSource = async () => {
 
   if (platform === "linux") {
     if (arch === "x64")
-      return { url: `${LINUX_BASE}/curl-amd64`, fileName: "curl", isZip: false };
+      return {
+        url: `${LINUX_BASE}/curl-amd64`,
+        fileName: "curl",
+        isZip: false
+      };
     if (arch === "arm64")
-      return { url: `${LINUX_BASE}/curl-arm64`, fileName: "curl", isZip: false };
+      return {
+        url: `${LINUX_BASE}/curl-arm64`,
+        fileName: "curl",
+        isZip: false
+      };
     throw new Error(`Unsupported Linux architecture: ${arch}`);
   }
 
   if (platform === "win32") {
-    // curl-for-win release assets are versioned (e.g. curl-8.10.1_2-win64-mingw.zip),
-    // so we resolve the latest matching asset via the GitHub API rather than
-    // hard-coding a version.
-    let assetSuffix;
-    if (arch === "x64") assetSuffix = "win64-mingw.zip";
-    else if (arch === "arm64") assetSuffix = "win64a-mingw.zip";
+    let assetParam;
+    if (arch === "x64") assetParam = "win64-mingw.zip";
+    else if (arch === "arm64") assetParam = "win64a-mingw.zip";
     else throw new Error(`Unsupported Windows architecture: ${arch}`);
 
-    const release = await fetch(
-      `https://api.github.com/repos/${WIN_REPO}/releases/latest`,
-      { headers: { "User-Agent": "retrieve-jobs-install" } }
-    ).then((r) => r.json());
-
-    const asset = release.assets?.find((a) => a.name.endsWith(assetSuffix));
-    if (!asset)
-      throw new Error(
-        `No matching Windows asset (${assetSuffix}) in latest ${WIN_REPO} release`
-      );
-
     return {
-      url: asset.browser_download_url,
+      url: `${WIN_LATEST}?p=${assetParam}`,
       fileName: "curl.exe",
       isZip: true
     };
@@ -113,8 +109,9 @@ const findCurlExe = (dir) => {
     return;
   }
 
-  // Windows: download the zip, extract via tar (built into Windows 10 1803+),
-  // copy curl.exe into bin/, then clean up the temp files.
+  // Windows: download the zip, extract via PowerShell's Expand-Archive (ships
+  // with every supported Windows version and works regardless of the parent
+  // shell), copy curl.exe into bin/, then clean up the temp files.
   const tmpZip = path.resolve(os.tmpdir(), `curl-${Date.now()}.zip`);
   const extractDir = path.resolve(os.tmpdir(), `curl-extract-${Date.now()}`);
 
@@ -122,7 +119,18 @@ const findCurlExe = (dir) => {
   await finished(Readable.fromWeb(fetchResponse.body).pipe(zipStream));
 
   fs.mkdirSync(extractDir);
-  execFileSync("tar", ["-xf", tmpZip, "-C", extractDir]);
+  execFileSync(
+    "powershell.exe",
+    [
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-Command",
+      `Expand-Archive -LiteralPath '${tmpZip}' -DestinationPath '${extractDir}' -Force`
+    ],
+    { stdio: "inherit" }
+  );
 
   const curlExe = findCurlExe(extractDir);
   if (!curlExe) throw new Error("curl.exe not found in extracted archive");
